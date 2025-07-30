@@ -1,1 +1,55 @@
-<h4>login</h4>
+<div class="auth-wrapper">
+    <div class="auth-container">
+        <!-- Left Side Image -->
+        <div class="auth-left">
+            <div class="overlay">
+            </div>
+        </div>
+
+        <!-- Right Side Form -->
+        <div class="auth-right">
+            <h2>Welcome back</h2>
+            <p class="subtitle">
+                Don't have an account? <a [routerLink]="['/register']">Sign up</a>
+            </p>
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="email" placeholder="you@company.com" formControlName="email" />
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Password</mat-label>
+                    <input matInput [type]="hidePassword ? 'password' : 'text'" placeholder="••••••••"
+                        formControlName="password" />
+                    <button mat-icon-button matSuffix tabindex="-1" type="button" (click)="togglePasswordVisibility()">
+                        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                    </button>
+                </mat-form-field>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <mat-checkbox class="terms-check" formControlName="rememberMe">Remember me</mat-checkbox>
+                    <a href="#" style="font-size: 13px; color: #0083dd;">Forgot password?</a>
+                </div>
+
+                <div style="height: 72px; visibility: hidden;"></div>
+
+                <button mat-raised-button color="primary" class="register-btn" type="submit">
+                    Log in
+                </button>
+
+                <div class="divider"><span>Or continue with</span></div>
+
+                <div class="social-login">
+                    <button mat-stroked-button class="google-btn" type="button">
+                        <mat-icon>google</mat-icon> Google
+                    </button>
+                    <button mat-stroked-button class="apple-btn" type="button">
+                        <mat-icon>apple</mat-icon> Apple
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

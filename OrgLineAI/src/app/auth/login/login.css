@@ -1,0 +1,256 @@
+:host {
+  display: block;
+  background: linear-gradient(to bottom right, #f8fafc, #f0f7ff);
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ============= Container ============= */
+.auth-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+}
+
+.auth-container {
+  display: flex;
+  align-items: stretch; /* Ensures both children are same height */
+  width: 100%;
+  max-width: 1100px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+}
+
+/* ============= Left Panel ============= */
+.auth-left {
+  flex: 1.2;
+  background: linear-gradient(135deg, rgba(3, 201, 183, 0.08), rgba(0, 131, 221, 0.05));
+  padding: 60px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.auth-left::before {
+  content: "";
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(3, 201, 183, 0.1), rgba(113, 96, 193, 0.1));
+}
+
+.auth-left::after {
+  content: "";
+  position: absolute;
+  bottom: -150px;
+  left: -100px;
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(0, 131, 221, 0.08), rgba(154, 52, 142, 0.08));
+}
+
+.tagline {
+  position: relative;
+  z-index: 2;
+  color: #2d3748;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.logo {
+  height: 30px;
+}
+
+/* ============= Right Panel ============= */
+.auth-right {
+  flex: 1;
+  background: #ffffff;
+  padding: 60px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: stretch; /* Ensures same height as left panel */
+}
+
+.auth-right h2 {
+  font-size: 26px;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.subtitle {
+  color: #4a5568;
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+.subtitle a {
+  color: #0083dd;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.subtitle a:hover {
+  color: #7160c1;
+}
+
+/* ============= Fields ============= */
+.name-fields {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-form-field {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 10px;
+}
+
+mat-form-field.mat-focused .mat-form-field-outline {
+  border-color: #00a0e0 !important;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-flex {
+  background-color: #f9fafb;
+  border-radius: 10px;
+}
+
+mat-label,
+input {
+  color: #2d3748;
+}
+
+input::placeholder {
+  color: #a0aec0;
+}
+
+mat-icon {
+  color: #a0aec0;
+}
+
+/* ============= Checkbox ============= */
+.terms-check {
+  margin: 16px 0;
+  color: #4a5568;
+  font-size: 13px;
+}
+
+.terms-check a {
+  color: #0083dd;
+  text-decoration: none;
+}
+
+.terms-check a:hover {
+  color: #7160c1;
+}
+
+/* ============= Primary Button ============= */
+.register-btn {
+  width: 100%;
+  background: #03c9b7;
+  color: white;
+  font-weight: 600;
+  margin-top: 8px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(3, 201, 183, 0.25);
+  transition: 0.3s ease;
+}
+
+.register-btn:hover {
+  background: #02b3a3;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(3, 201, 183, 0.35);
+}
+
+/* ============= Divider ============= */
+.divider {
+  text-align: center;
+  color: #a0aec0;
+  font-size: 14px;
+  margin: 24px 0;
+  position: relative;
+}
+.divider span {
+  background: #fff;         /* Match your form's background */
+  padding: 0 12px;          /* Adds space around the text */
+  position: relative;       /* Ensure text stays above lines */
+  z-index: 1;
+}
+.divider::before,
+.divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+/* ============= Social Buttons ============= */
+.social-login {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.google-btn,
+.apple-btn {
+  flex: 1;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #1a202c;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.google-btn mat-icon {
+  color: #db4437;
+  margin-right: 8px;
+}
+
+.apple-btn mat-icon {
+  color: black;
+  margin-right: 8px;
+}
+
+/* ============= Responsive ============= */
+@media (max-width: 900px) {
+  .auth-container {
+    flex-direction: column;
+  }
+
+  .auth-left,
+  .auth-right {
+    padding: 40px 30px;
+  }
+
+  .name-fields {
+    flex-direction: column;
+  }
+
+  .logo {
+    height: 24px;
+  }
+}

@@ -1,1 +1,63 @@
-<p>register works!</p>
+<div class="auth-wrapper">
+  <div class="auth-container">
+    <!-- Left Side Image -->
+    <div class="auth-left">
+      <div class="overlay">
+      </div>
+    </div>
+
+    <!-- Right Side Form -->
+    <div class="auth-right">
+      <h2>Create an account</h2>
+      <p class="subtitle">
+        Already have an account? <a [routerLink]="['/login']">Log in</a>
+      </p>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="name-fields">
+          <mat-form-field appearance="fill">
+            <mat-label>First name</mat-label>
+            <input matInput placeholder="Fletcher" formControlName="firstName" />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Last name</mat-label>
+            <input matInput placeholder="Smith" formControlName="lastName" />
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" placeholder="you@company.com" formControlName="email" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" placeholder="••••••••"
+            formControlName="password" />
+          <button mat-icon-button matSuffix tabindex="-1" type="button" (click)="togglePasswordVisibility()">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-checkbox class="terms-check" formControlName="terms">
+          I agree to the <a href="#">Terms & Conditions</a>
+        </mat-checkbox>
+
+        <button mat-raised-button color="primary" class="register-btn" type="submit">
+          Create account
+        </button>
+
+        <div class="divider"><span>Or register with</span></div>
+
+        <div class="social-login">
+          <button mat-stroked-button class="google-btn" type="button">
+            <mat-icon>google</mat-icon> Google
+          </button>
+          <button mat-stroked-button class="apple-btn" type="button">
+            <mat-icon>apple</mat-icon> Apple
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
