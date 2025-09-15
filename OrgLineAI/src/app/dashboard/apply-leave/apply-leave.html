@@ -1,0 +1,104 @@
+<div class="layout">
+    <!-- Sidebar (same visual as other pages) -->
+    <aside class="sidebar">
+        <div class="avatar">👤</div>
+        <nav class="nav">
+            <a class="nav-item" routerLink="/dashboard" routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }">
+                <div class="icon">🏠</div><span>Home</span>
+            </a>
+            <a class="nav-item" routerLink="/leaves" routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }">
+                <div class="icon">📅</div><span>Leaves</span>
+            </a>
+            <a class="nav-item" routerLink="/apply" routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }">
+                <div class="icon">➕</div><span>Apply</span>
+            </a>
+        </nav>
+
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <h1>Apply for Leave</h1>
+            <div class="spacer"></div>
+            <div class="user-pill">
+                <div class="user-avatar">JD</div>
+                <span class="user-name">{{ userName }}</span>
+                <mat-icon>keyboard_arrow_down</mat-icon>
+            </div>
+        </header>
+
+        <!-- Card -->
+        <section class="card">
+            <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+                <!-- Leave Type -->
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Leave Type</mat-label>
+                    <mat-select formControlName="leaveType">
+                        <mat-option value="Vacation">Vacation</mat-option>
+                        <mat-option value="Sick Leave">Sick Leave</mat-option>
+                        <mat-option value="Personal Leave">Personal Leave</mat-option>
+                        <mat-option value="Work From Home">Work From Home</mat-option>
+                    </mat-select>
+                    <button mat-icon-button matSuffix tabindex="-1"><mat-icon>expand_more</mat-icon></button>
+                </mat-form-field>
+
+                <!-- Duration -->
+                <div class="row">
+                    <div class="col">
+                        <div class="label">Leave Duration</div>
+                        <mat-radio-group formControlName="duration" class="radios">
+                            <mat-radio-button value="full">Full Day</mat-radio-button>
+                            <mat-radio-button value="half">Half Day</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+
+                <!-- Dates -->
+                <div class="row g">
+                    <mat-form-field appearance="outline" class="col">
+                        <mat-label>Start Date</mat-label>
+                        <input matInput [matDatepicker]="sd" formControlName="startDate" />
+                        <mat-datepicker-toggle matSuffix [for]="sd"></mat-datepicker-toggle>
+                        <mat-datepicker #sd></mat-datepicker>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="col">
+                        <mat-label>End Date</mat-label>
+                        <input matInput [matDatepicker]="ed" formControlName="endDate" />
+                        <mat-datepicker-toggle matSuffix [for]="ed"></mat-datepicker-toggle>
+                        <mat-datepicker #ed></mat-datepicker>
+                    </mat-form-field>
+                </div>
+
+                <!-- Reason -->
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Reason</mat-label>
+                    <textarea matInput rows="5" formControlName="reason"></textarea>
+                </mat-form-field>
+
+                <!-- File Upload -->
+                <div class="upload">
+                    <div class="label">Supporting Document (Optional)</div>
+                    <label class="choosefile">
+                        <input type="file" (change)="onFileChange($event)" />
+                        Choose file
+                    </label>
+                    <span class="filename">{{ fileName }}</span>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions">
+                    <button mat-stroked-button type="button" class="btn-cancel" (click)="cancel()">
+                        Cancel
+                    </button>
+                    <button mat-flat-button color="primary" class="btn-submit" type="submit">
+                        Submit Request
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>

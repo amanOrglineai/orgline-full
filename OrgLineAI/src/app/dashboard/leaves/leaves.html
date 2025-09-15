@@ -1,0 +1,117 @@
+<div class="layout">
+    <!-- Sidebar (kept simple to match your app) -->
+    <aside class="sidebar">
+        <div class="avatar">👤</div>
+        <nav class="nav">
+            <a class="nav-item" routerLink="/dashboard" routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }">
+                <div class="icon">🏠</div><span>Home</span>
+            </a>
+            <a class="nav-item" routerLink="/leaves" routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }">
+                <div class="icon">📅</div><span>Leaves</span>
+            </a>
+            <a class="nav-item" routerLink="/apply" routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }">
+                <div class="icon">➕</div><span>Apply</span>
+            </a>
+        </nav>
+
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+        <header class="topbar">
+            <h1>Leave Status</h1>
+            <div class="spacer"></div>
+            <div class="user-pill">
+                <div class="user-avatar">JD</div>
+                <span class="user-name">{{ userName }}</span>
+                <mat-icon>keyboard_arrow_down</mat-icon>
+            </div>
+        </header>
+
+        <!-- Metric cards -->
+        <section class="stats">
+            <article class="stat-card">
+                <div class="s-label">Total Leaves</div>
+                <div class="s-value">{{ totals.total }}</div>
+                <mat-icon class="s-icon blue">calendar_month</mat-icon>
+            </article>
+
+            <article class="stat-card">
+                <div class="s-label">Leaves Used</div>
+                <div class="s-value">{{ totals.used }}</div>
+                <mat-icon class="s-icon red">calendar_month</mat-icon>
+            </article>
+
+            <article class="stat-card">
+                <div class="s-label">Pending</div>
+                <div class="s-value">{{ totals.pending }}</div>
+                <mat-icon class="s-icon orange">schedule</mat-icon>
+            </article>
+
+            <article class="stat-card">
+                <div class="s-label">Available</div>
+                <div class="s-value">{{ totals.available }}</div>
+                <mat-icon class="s-icon green">event_available</mat-icon>
+            </article>
+        </section>
+
+        <!-- Filters row -->
+        <section class="filters">
+            <button mat-stroked-button class="fbtn">
+                <mat-icon>calendar_today</mat-icon>
+                Date Range
+                <mat-icon class="chev">expand_more</mat-icon>
+            </button>
+
+            <button mat-stroked-button class="fbtn">
+                All Status
+                <mat-icon class="chev">expand_more</mat-icon>
+            </button>
+
+            <button mat-stroked-button class="fbtn">
+                All Leave Types
+                <mat-icon class="chev">expand_more</mat-icon>
+            </button>
+        </section>
+
+        <!-- Leave list -->
+        <section class="list">
+            <article class="leave-card" *ngFor="let l of leaves">
+                <div class="left">
+                    <span class="state-dot" [ngClass]="{
+            pending: l.status==='Pending',
+            approved: l.status==='Approved',
+            rejected: l.status==='Rejected'
+          }"></span>
+
+                    <div class="title-block">
+                        <div class="title">{{ l.title }}</div>
+                        <div class="sub">
+                            {{ l.dateRange }}
+                            <span class="dot">•</span>
+                            {{ l.days }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right">
+                    <span class="status" [ngClass]="{
+                  pending: l.status==='Pending',
+                  approved: l.status==='Approved',
+                  rejected: l.status==='Rejected',
+                  cancelled: l.status==='Cancelled'
+                }">
+                        {{ l.status }}
+                    </span>
+
+                    <button *ngIf="l.canCancel" type="button" mat-flat-button class="cancel-btn" (click)="onCancel(l)">
+                        Cancel
+                    </button>
+                </div>
+            </article>
+        </section>
+    </main>
+</div>
