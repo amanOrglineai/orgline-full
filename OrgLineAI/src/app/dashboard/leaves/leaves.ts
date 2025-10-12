@@ -1,65 +1,87 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { NgClass, NgFor } from '@angular/common';
+import { NgFor, NgClass, NgIf } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { LeaveService } from '../../services/leave.service';
+import { Leave } from '../../models/leave';
 
-type LeaveStatus = 'Pending' | 'Approved' | 'Rejected' | 'Cancelled';
-
-interface LeaveItem {
+/** View model used only by template */
+interface LeaveView extends Leave {
   title: string;
   dateRange: string;
-  days: string;      // e.g. "3 days" or "0.5 day – First Half"
-  status: LeaveStatus;
-  canCancel?: boolean;
-  icon?: 'pending' | 'approved' | 'rejected';
+  daysLabel: string;
+  canCancel: boolean;
 }
+
 @Component({
   selector: 'app-leaves',
   standalone: true,
-  imports: [MatIconModule, MatButtonModule, NgFor, NgClass, RouterLink, RouterLinkActive],
+  imports: [
+    MatIconModule,
+    MatButtonModule,
+    NgFor,
+    NgClass,
+    NgIf,
+    RouterLink,
+    RouterLinkActive,
+  ],
   templateUrl: './leaves.html',
-  styleUrl: './leaves.css'
+  styleUrls: ['./leaves.css'],
 })
-export class Leaves {
-userName = 'Jane Doe';
+export class Leaves implements OnInit {
+  userName = 'Jane Doe';
 
-  // Top metrics
-  totals = {
-    total: 20,
-    used: 12,
-    pending: 4,
-    available: 8
-  };
+  // Reactive state
+  private leavesSignal = signal<LeaveView[]>([]);
+  private balanceSignal = signal({
+    total: 0,
+    used: 0,
+    available: 0,
+  });
 
-  // Mock list (matches screenshot)
-  leaves: LeaveItem[] = [
-    {
-      title: 'Vacation',
-      dateRange: '2025-09-01 to 2025-09-03',
-      days: '3 days',
-      status: 'Pending',
-      icon: 'pending'
-    },
-    {
-      title: 'Vacation',
-      dateRange: '2025-08-10 to 2025-08-15',
-      days: '5 days',
-      status: 'Approved',
-      canCancel: true,
-      icon: 'approved'
-    },
-    {
-      title: 'Personal Leave',
-      dateRange: '2025-09-01 to 2025-09-09',
-      days: '0.5 day – First Half',
-      status: 'Pending',
-      icon: 'pending'
+  totals = computed(() => {
+    const b = this.balanceSignal();
+    const leaves = this.leavesSignal();
+    return {
+      total: b.total,
+      used: b.used,
+      available: b.available,
+      pending: leaves.filter((l) => l.status === 'Pending').length,
+    };
+  });
+
+  constructor(private leaveService: LeaveService) {}
+
+  ngOnInit(): void {
+    this.refreshLeaves();
+  }
+
+  private refreshLeaves(): void {
+    const list = this.leaveService.list();
+    const mapped: LeaveView[] = list.map((l) => ({
+      ...l,
+      title: `${l.type} Leave`,
+      dateRange: `${l.startISO} to ${l.endISO}`,
+      daysLabel: l.days === 1 ? '1 day' : `${l.days} days`,
+      canCancel: l.status === 'Pending',
+    }));
+    this.leavesSignal.set(mapped);
+    this.balanceSignal.set(this.leaveService.getBalance());
+  }
+
+  get leaves(): LeaveView[] {
+    return this.leavesSignal();
+  }
+  
+
+  onCancel(item: LeaveView): void {
+    try {
+      this.leaveService.cancel(item.id);
+      this.refreshLeaves();
+      alert('Leave cancelled successfully.');
+    } catch (err: any) {
+      alert(err.message || err);
     }
-  ];
-
-  // actions (wire later)
-  onCancel(item: LeaveItem) {
-    console.log('Cancel clicked', item);
   }
 }
