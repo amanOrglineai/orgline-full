@@ -7,34 +7,14 @@
       </button>
 
       <nav class="nav">
-        <a
-          class="nav-item"
-          routerLink="/dashboard"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-        >
-          <div class="nav-icon">🏠</div>
-          <span>Home</span>
+        <a class="nav-item" routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <div class="nav-icon">🏠</div><span>Home</span>
         </a>
-
-        <a
-          class="nav-item"
-          routerLink="/leaves"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-        >
-          <div class="nav-icon">📅</div>
-          <span>Leaves</span>
+        <a class="nav-item" routerLink="/leaves" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <div class="nav-icon">📅</div><span>Leaves</span>
         </a>
-
-        <a
-          class="nav-item"
-          routerLink="/apply"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-        >
-          <div class="nav-icon">➕</div>
-          <span>Apply</span>
+        <a class="nav-item" routerLink="/apply" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <div class="nav-icon">➕</div><span>Apply</span>
         </a>
       </nav>
     </div>
@@ -90,12 +70,7 @@
             <div class="hours-label">Total Hours</div>
             <div class="hours-value">{{ totalHours() }}</div>
           </div>
-          <button
-            mat-flat-button
-            color="primary"
-            class="punch-btn"
-            (click)="onPunchClick()"
-          >
+          <button mat-flat-button color="primary" class="punch-btn" (click)="onPunchClick()">
             {{ punchButtonLabel() }}
           </button>
         </div>
@@ -116,9 +91,7 @@
         </div>
 
         <div class="balance-actions">
-          <button mat-flat-button color="primary" routerLink="/apply">
-            Apply Leave
-          </button>
+          <button mat-flat-button color="primary" routerLink="/apply">Apply Leave</button>
           <button mat-stroked-button routerLink="/leaves">My Leaves</button>
         </div>
       </article>
@@ -149,12 +122,21 @@
       <!-- Calendar -->
       <section class="calendar card">
         <header class="calendar-head">
-          <button class="chev">&lt;</button>
+          <button class="chev" (click)="prevMonth()">&lt;</button>
           <h2>{{ month }}</h2>
-          <button class="chev">&gt;</button>
+          <button class="chev" (click)="nextMonth()">&gt;</button>
         </header>
 
-        <!-- same calendar grid -->
+        <!-- Month stats (dynamic) -->
+        <div class="month-stats">
+          <span class="legend-chip"><i class="dot" data-type="P"></i> P: {{ monthStats().P }}</span>
+          <span class="legend-chip"><i class="dot" data-type="HD"></i> HD: {{ monthStats().HD }}</span>
+          <span class="legend-chip"><i class="dot" data-type="L"></i> L: {{ monthStats().L }}</span>
+          <span class="legend-chip"><i class="dot" data-type="PH"></i> PH: {{ monthStats().PH }}</span>
+          <span class="legend-chip"><i class="dot" data-type="WO"></i> WO: {{ monthStats().WO }}</span>
+          <span class="legend-chip"><i class="dot" data-type="A"></i> A: {{ monthStats().A }}</span>
+        </div>
+
         <div class="cal-grid">
           <div class="dow">Sun</div>
           <div class="dow">Mon</div>
@@ -163,7 +145,65 @@
           <div class="dow">Thu</div>
           <div class="dow">Fri</div>
           <div class="dow">Sat</div>
-          <!-- ... calendar days unchanged ... -->
+
+          <!-- dynamic calendar cells with marks -->
+          <ng-container *ngFor="let c of cells()">
+            <div class="cell"
+                 [class.empty]="!c.inMonth"
+                 [class.active]="isToday(c.date)"
+                 (click)="selectDay(c)"
+                 [attr.aria-label]="getTitle(c) || (c.date | date:'mediumDate')">
+              {{ c.date.getDate() }}
+              <span *ngIf="c.inMonth && c.mark"
+                    class="dot"
+                    [attr.data-type]="c.mark"
+                    [title]="getTitle(c)"></span>
+            </div>
+          </ng-container>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend-row">
+          <span class="legend-chip"><i class="dot" data-type="P"></i> P: Present</span>
+          <span class="legend-chip"><i class="dot" data-type="HD"></i> HD: Half Day</span>
+          <span class="legend-chip"><i class="dot" data-type="L"></i> L: Leave</span>
+          <span class="legend-chip"><i class="dot" data-type="PH"></i> PH: Public Holiday</span>
+          <span class="legend-chip"><i class="dot" data-type="WO"></i> WO: Week Off</span>
+          <span class="legend-chip"><i class="dot" data-type="A"></i> A: Absent</span>
+        </div>
+
+        <!-- Day details -->
+        <div class="day-details" *ngIf="selected() as s">
+          <div class="dd-head">
+            <div class="dd-date">{{ s.date | date:'fullDate' }}</div>
+            <span class="legend-chip small"><i class="dot" [attr.data-type]="s.mark || 'A'"></i> {{ getTitle(s) || 'No mark' }}</span>
+          </div>
+
+          <div class="dd-grid">
+            <div class="dd-card">
+              <div class="dd-title">Attendance</div>
+              <div *ngIf="dayPunches().length; else noPunch">
+                <div class="punch-row" *ngFor="let p of dayPunches()">
+                  <span class="mono">{{ (p.in | date:'shortTime') }}</span>
+                  <span>–</span>
+                  <span class="mono">{{ p.out ? (p.out | date:'shortTime') : '...' }}</span>
+                </div>
+              </div>
+              <ng-template #noPunch><div class="muted">No punches.</div></ng-template>
+            </div>
+
+            <div class="dd-card">
+              <div class="dd-title">Leaves</div>
+              <div *ngIf="dayLeaves().length; else noLeaves">
+                <div class="leave-row" *ngFor="let l of dayLeaves()">
+                  <span class="badge">{{ (l.status || 'pending') | titlecase }}</span>
+                  <span>{{ l.type || 'Leave' }}</span>
+                  <span *ngIf="l.halfDay" class="muted">• Half Day</span>
+                </div>
+              </div>
+              <ng-template #noLeaves><div class="muted">No leave on this day.</div></ng-template>
+            </div>
+          </div>
         </div>
       </section>
 
